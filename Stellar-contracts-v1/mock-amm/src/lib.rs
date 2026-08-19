@@ -20,9 +20,9 @@ const MAINNET_NETWORK_ID: [u8; 32] = [
 #[derive(Clone)]
 pub enum DataKey {
     Admin,
-    TokenIn,   // wPi
-    TokenOut,  // MockUSDC
-    Rate,      // Rate: out_amount = in_amount * Rate / 1_000_000
+    TokenIn,  // wPi
+    TokenOut, // MockUSDC
+    Rate,     // Rate: out_amount = in_amount * Rate / 1_000_000
 }
 
 #[contracterror]
@@ -98,6 +98,7 @@ impl MockAmm {
         from.require_auth();
         let token_out_addr: Address = env.storage().instance().get(&DataKey::TokenOut).unwrap();
         let token_out = token::Client::new(&env, &token_out_addr);
-        token_out.transfer(&from, &env.current_contract_address(), &amount_out);
+        let pool_address = env.current_contract_address();
+        token_out.transfer(&from, &pool_address, &amount_out);
     }
 }
